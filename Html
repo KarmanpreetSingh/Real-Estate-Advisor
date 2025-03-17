@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Advisor</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        form { margin: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Real Estate Advisor</h1>
+    
+    <form id="propertyForm">
+        <input type="text" id="address" placeholder="Property Address" required>
+        <input type="text" id="type" placeholder="Property Type" required>
+        <input type="number" id="price" placeholder="Property Price" required>
+        <button type="submit">Add Property</button>
+    </form>
+    
+    <button onclick="fetchProperties()">View Properties</button>
+    <div id="properties"></div>
+    
+    <script>
+        document.getElementById('propertyForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let address = document.getElementById('address').value;
+            let type = document.getElementById('type').value;
+            let price = document.getElementById('price').value;
+            
+            fetch('/cgi-bin/add_property.cgi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `address=${address}&type=${type}&price=${price}`
+            }).then(response => response.text())
+              .then(data => alert(data));
+        });
+
+        function fetchProperties() {
+            fetch('/cgi-bin/display_properties.cgi')
+                .then(response => response.text())
+                .then(data => document.getElementById('properties').innerHTML = data);
+        }
+    </script>
+</body>
+</html>
